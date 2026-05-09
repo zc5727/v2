@@ -1,0 +1,86 @@
+[defaults]
+port = 22
+user = "root"
+identity_file = ""
+password_env = "ATM_SSH_PASSWORD"
+connect_timeout = 15
+report_dir = "./reports"
+
+[cloud_monitor]
+enabled = false
+access_key_id = ""
+access_key_secret = ""
+default_region = "cn-hangzhou"
+endpoint = "https://metrics.cn-hangzhou.aliyuncs.com"
+namespace = "acs_ecs_dashboard"
+period = "60"
+lookback_minutes = 10
+
+[llm]
+enabled = false
+provider = "aliyun-bailian"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = ""
+model = "qwen-plus"
+timeout_seconds = 20
+
+[alerting]
+enabled = false
+webhook_url = ""
+
+[web]
+enabled = false
+host = "127.0.0.1"
+port = 8787
+
+[risk]
+freeze_changes = false
+require_approval_for_production = true
+require_approval_for_high_risk = true
+high_risk_actions = [
+  "service-restart",
+  "frontend-rollback",
+  "data-repair-run",
+  "mysql-repair",
+  "spark-backfill",
+  "xxl-job-rerun",
+  "deploy:frontend-dist",
+  "deploy:backend-bundle",
+  "deploy:bigdata-bundle",
+]
+
+[[servers]]
+name = "atm-app-server"
+host = "x.x.x.x"
+port = 22
+user = "root"
+identity_file = ""
+password_env = "ATM_SSH_PASSWORD"
+environment = "pre"
+tags = ["atm", "pre", "app", "nacos", "gateway", "nginx"]
+region = "cn-hangzhou"
+instance_id = ""
+
+[[servers]]
+name = "atm-bigdata-server"
+host = "x.x.x.x"
+port = 22
+user = "root"
+identity_file = ""
+password_env = "ATM_SSH_PASSWORD"
+environment = "pre"
+tags = ["atm", "pre", "bigdata", "xxl-job", "spark", "hadoop", "clickhouse"]
+region = "cn-hangzhou"
+instance_id = ""
+
+[[servers]]
+name = "atm-mysql-server"
+host = "x.x.x.x"
+port = 22
+user = "root"
+identity_file = ""
+password_env = "ATM_SSH_PASSWORD"
+environment = "pre"
+tags = ["atm", "pre", "mysql"]
+region = "cn-hangzhou"
+instance_id = ""

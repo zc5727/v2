@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: atm-ops-agent-standalone
+Version: 0.1.0
+Summary: Standalone ATM operations agent with CLI and HTTP API.
+Requires-Python: >=3.11
+Requires-Dist: langgraph<2,>=1.1
+Requires-Dist: paramiko>=3.4.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"

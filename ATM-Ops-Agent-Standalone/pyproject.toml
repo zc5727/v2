@@ -1,0 +1,21 @@
+[project]
+name = "atm-ops-agent-standalone"
+version = "0.1.0"
+description = "Standalone ATM operations agent with CLI and HTTP API."
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=1.1,<2",
+    "paramiko>=3.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+atm-ops-agent = "atm_ops_agent.agent:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

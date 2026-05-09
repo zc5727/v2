@@ -1,0 +1,2 @@
+[console_scripts]
+atm-ops-agent = atm_ops_agent.agent:main

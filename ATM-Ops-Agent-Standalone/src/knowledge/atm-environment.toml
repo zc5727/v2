@@ -1,0 +1,253 @@
+[metadata]
+name = "atm-pre"
+updated_at = "2026-04-21"
+git_url = "https://codeup.aliyun.com/puyu/atm-cd/atm-cd.git"
+default_branch = "master"
+
+[ssh]
+user = "root"
+auth_mode = "password_or_key"
+password_source = "runtime_secret_or_external_note"
+
+[paths]
+remote_base = "/data"
+services_dir = "/data/atm-pre-services"
+gateway_dir = "/data/atm-gateway-pre"
+ui_dir = "/data/atm-ui-pre"
+ui_current = "/data/atm-ui-pre/current"
+ui_release_script = "/data/atm-ui-pre/release.sh"
+bigdata_dir = "/data/bigdata-pre"
+bigdata_compose = "/data/bigdata-pre/docker-compose.yml"
+dolphinscheduler_dir = "/data/dolphinscheduler"
+atm_job_dir = "/data/atm-job"
+clickhouse_dir = "/data/clickhouse"
+
+[build]
+maven_profile = "pre"
+ui_build_cmd = "pnpm build:pre"
+
+[nacos]
+container = "nacos"
+console_url = "http://8.161.226.223:8848/nacos"
+namespace = "pd-pre"
+namespace_id = "ba92e967-e1b2-4891-afa4-ad59385b1dbb"
+gateway_data_id = "atm-gateway-pre.yml"
+service_data_id = "atm-service-pre.yml"
+credential_source = "runtime_secret_or_external_note"
+
+[xxl_job]
+admin_public_url = "http://8.161.227.173:7000/xxl-job-admin/"
+admin_private_url = "http://172.20.71.210:7000/xxl-job-admin/"
+appname = "atm-job-chengdu"
+executor_address = "http://172.20.71.211:9998"
+executor_ip = "172.20.71.211"
+executor_port = 9998
+access_token_source = "runtime_secret_or_external_note"
+
+[spark]
+master_url = "spark://spark-master:7077"
+app_name = "SparkOnHDFSPre"
+event_log_dir = "hdfs://hadoop-namenode:8020/spark-logs"
+warehouse_dir = "hdfs://hadoop-namenode:8020/user/hive/warehouse"
+deploy_mode = "standalone"
+
+[hdfs]
+default_fs = "hdfs://hadoop-namenode:8020"
+replication = 1
+namenode_rpc = "hadoop-namenode:8020"
+namenode_http = "0.0.0.0:9870"
+datanode_http = "0.0.0.0:9864"
+permissions_enabled = false
+
+[mysql]
+host = "8.130.65.254"
+port = 3306
+user = "root"
+database = "atm_job"
+password_source = "runtime_secret_or_external_note"
+
+[[hosts]]
+name = "atm-app-server"
+host = "8.161.226.223"
+private_ip = "172.20.71.211"
+role = "app"
+
+[[hosts.services]]
+name = "nacos"
+runtime = "docker"
+container = "nacos"
+ports = ["8848", "9848", "9849", "8080"]
+
+[[hosts.services]]
+name = "atm-gateway-pre"
+runtime = "docker-compose"
+directory = "/data/atm-gateway-pre"
+ports = ["9300"]
+
+[[hosts.services]]
+name = "atm-auth-pre"
+runtime = "docker-compose"
+directory = "/data/atm-pre-services"
+ports = ["9200"]
+
+[[hosts.services]]
+name = "atm-system-pre"
+runtime = "docker-compose"
+directory = "/data/atm-pre-services"
+ports = ["9201"]
+
+[[hosts.services]]
+name = "atm-service-pre"
+runtime = "docker-compose"
+directory = "/data/atm-pre-services"
+ports = ["9202", "9998"]
+
+[[hosts.services]]
+name = "atm-openapi-pre"
+runtime = "docker-compose"
+directory = "/data/atm-pre-services"
+ports = ["9203"]
+
+[[hosts.services]]
+name = "nginx"
+runtime = "systemd"
+ports = ["80", "9400"]
+
+[[hosts]]
+name = "atm-bigdata-server"
+host = "8.161.227.173"
+private_ip = "172.20.71.210"
+role = "bigdata"
+
+[[hosts.services]]
+name = "atm-job"
+runtime = "docker"
+container = "atm-job"
+ports = ["7000"]
+
+[[hosts.services]]
+name = "dolphinscheduler-standalone"
+runtime = "docker-compose"
+directory = "/data/dolphinscheduler"
+ports = ["12345", "5678", "25333", "50052"]
+
+[[hosts.services]]
+name = "dolphinscheduler-postgres"
+runtime = "docker-compose"
+directory = "/data/dolphinscheduler"
+ports = ["5432"]
+
+[[hosts.services]]
+name = "clickhouse-server"
+runtime = "docker"
+container = "clickhouse-server"
+ports = ["8123", "9000"]
+
+[[hosts.services]]
+name = "hadoop-namenode-pre"
+runtime = "docker-compose"
+directory = "/data/bigdata-pre"
+ports = ["8020", "9870"]
+
+[[hosts.services]]
+name = "hadoop-datanode-pre"
+runtime = "docker-compose"
+directory = "/data/bigdata-pre"
+ports = ["9864"]
+
+[[hosts.services]]
+name = "spark-master-pre"
+runtime = "docker-compose"
+directory = "/data/bigdata-pre"
+ports = ["7077", "8081"]
+
+[[hosts.services]]
+name = "spark-worker-1-pre"
+runtime = "docker-compose"
+directory = "/data/bigdata-pre"
+ports = ["8082"]
+
+[[hosts]]
+name = "atm-mysql-server"
+host = "8.130.65.254"
+role = "mysql"
+
+[[backend_jars]]
+service = "atm-auth-pre"
+source = "atm-auth/target/atm-auth.jar"
+target_name = "atm-auth.jar"
+remote_path = "/data/atm-pre-services/atm-auth.jar"
+
+[[backend_jars]]
+service = "atm-system-pre"
+source = "atm-modules/atm-system/target/atm-modules-system.jar"
+target_name = "atm-system.jar"
+remote_path = "/data/atm-pre-services/atm-system.jar"
+
+[[backend_jars]]
+service = "atm-service-pre"
+source = "atm-modules/atm-service/target/atm-service.jar"
+target_name = "atm-service.jar"
+remote_path = "/data/atm-pre-services/atm-service.jar"
+
+[[backend_jars]]
+service = "atm-openapi-pre"
+source = "atm-modules/atm-openapi/target/atm-openapi.jar"
+target_name = "atm-openapi.jar"
+remote_path = "/data/atm-pre-services/atm-openapi.jar"
+
+[[gateway_jars]]
+service = "atm-gateway-pre"
+source = "atm-gateway/target/atm-gateway.jar"
+target_name = "atm-gateway.jar"
+remote_path = "/data/atm-gateway-pre/atm-gateway.jar"
+
+[[health_checks]]
+host = "atm-app-server"
+name = "nacos-console"
+command = "curl -I --max-time 10 http://127.0.0.1:8848/nacos/ || true"
+
+[[health_checks]]
+host = "atm-app-server"
+name = "gateway-via-nginx"
+command = "curl -I --max-time 10 http://127.0.0.1:9400/prod-api/system/user/getInfo || true"
+
+[[health_checks]]
+host = "atm-app-server"
+name = "nginx-9400"
+command = "curl -I --max-time 10 http://127.0.0.1:9400/ || true"
+
+[[health_checks]]
+host = "atm-bigdata-server"
+name = "atm-job-admin"
+command = "curl -I --max-time 10 http://127.0.0.1:7000/xxl-job-admin/ || true"
+
+[[health_checks]]
+host = "atm-bigdata-server"
+name = "clickhouse-ping"
+command = "curl http://127.0.0.1:8123/ping"
+
+[[health_checks]]
+host = "atm-bigdata-server"
+name = "namenode"
+command = "curl -s -o /dev/null -w 'namenode=%{http_code}\\n' http://127.0.0.1:9870/"
+
+[[health_checks]]
+host = "atm-bigdata-server"
+name = "spark-master"
+command = "curl -s -o /dev/null -w 'spark-master=%{http_code}\\n' http://127.0.0.1:8081/"
+
+[[health_checks]]
+host = "atm-bigdata-server"
+name = "spark-worker"
+command = "curl -s -o /dev/null -w 'spark-worker=%{http_code}\\n' http://127.0.0.1:8082/"
+
+[local_paths]
+atm_job_project = "/Users/chenzhuo/project/cd-new/atm-job-chengdu"
+atm_job_pre_config = "/Users/chenzhuo/project/cd-new/atm-job-chengdu/xxl-job-admin/src/main/resources/application-pre.properties"
+atm_cd_project = "/Users/chenzhuo/project/cd-new/atm-cd"
+atm_pre_services_compose = "/Users/chenzhuo/project/cd-new/atm-cd/docker/atm-pre-services/docker-compose.yml"
+atm_gateway_pre_compose = "/Users/chenzhuo/project/cd-new/atm-cd/docker/atm-gateway-pre/docker-compose.yml"
+atm_ui_pre_deploy = "/Users/chenzhuo/project/cd-new/atm-cd/docker/atm-ui-pre"
+bigdata_pre_template = "/Users/chenzhuo/project/cd-new/atm-cd/docker/bigdata-pre"
+server_password_note = "/Users/chenzhuo/file/aliyun-servers.md"
